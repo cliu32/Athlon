@@ -4,7 +4,7 @@ Accurate Typing of Human Leukocyte Antigen (HLA) by Oxford Nanopore Sequencing
 * Locus-specific sequencing reads should cover at least exons 2 and 3 of HLA-A, -B, and -C genes, and the number of reads is ideally above 100 per sample. 
 * Better results have been achieved with R9.4 flow cell chemistry than R7.4 flow cell chemistry. 
 
-### Prerequisites
+## Prerequisites
 
 The following software or compatible versions must be available in the $PATH:
 * BLASR, version 2.0.0
