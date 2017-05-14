@@ -1,6 +1,8 @@
 # Athlon
 Accurate Typing of Human Leukocyte Antigen (HLA) by Oxford Nanopore Sequencing
-The pipeline is validated to perform HLA typing using nanopore sequencing reads at 3-field resolution with the G-group nomenclature. Locus-specific sequencing reads should cover at least exons 2 and 3 of HLA-A, -B, and -C genes, and the number of reads is ideally above 100 per sample. Better results have been achieved with R9.4 flow cell chemistry than R7.4 flow cell chemistry. 
+* The pipeline is validated to perform HLA typing using nanopore sequencing reads at 3-field resolution with the G-group nomenclature. 
+* Locus-specific sequencing reads should cover at least exons 2 and 3 of HLA-A, -B, and -C genes, and the number of reads is ideally above 100 per sample. 
+* Better results have been achieved with R9.4 flow cell chemistry than R7.4 flow cell chemistry. 
 
 ### Prerequisites
 
@@ -19,7 +21,7 @@ chmod +x athlon.sh
 ./athlon.sh
 ```
 
-Three samples in the data folder will be analyzed. A .log file and a .rslt file will be generated. Intermediate files will be available in the rslt folder upon completion of the analysis. 
+Six samples in the data folder will be analyzed. A .log file and a .rslt file will be generated. Intermediate files will be available in the rslt folder upon completion of the analysis. 
 
 
 ## Versioning
