@@ -1,65 +1,26 @@
 # Athlon
 Accurate Typing of Human Leukocyte Antigen (HLA) by Oxford Nanopore Sequencing
-
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+The pipeline is validated to perform HLA typing using nanopore sequencing reads at 3-field resolution with the G-group nomenclature. Locus-specific sequencing reads should cover at least exons 2 and 3 of HLA-A, -B, and -C genes, and the number of reads is ideally above 100 per sample. Better results have been achieved with R9.4 flow cell chemistry than R7.4 flow cell chemistry. 
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+The following software or compatible versions must be available in the $PATH:
+BLASR, version 2.0.0
+Samtools (Samtools and bcftools), version 1.2 using htslib 1.2.1
+Bedtools, version 2.25.0
+Pyfaidx, version 0.4.8.3
+Blast, version 2.2.31
+
+## Getting Started and running the tests
 
 ```
-Give examples
+cd Athlon
+chmod +x athlon.sh
+./athlon.sh
 ```
 
-### Installing
+Three samples in the data folder will be analyzed. A .log file and a .rslt file will be generated. Intermediate files will be available in the rslt folder upon completion of the analysis. 
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
 ## Contributing
 
