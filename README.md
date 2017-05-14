@@ -13,9 +13,10 @@ The following software or compatible versions must be available in the $PATH:
 * Pyfaidx, version 0.4.8.3
 * Blast, version 2.2.31
 
-## Getting Started and running the tests
+## Getting Started and analyzing the test samples
 
 ```
+git clone https://github.com/cliu32/Athlon.git
 cd Athlon
 chmod +x athlon.sh
 ./athlon.sh
