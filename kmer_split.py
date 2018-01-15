@@ -1,38 +1,51 @@
+#author: Fangzhou Xiao, xfz@caltech.edu; modified and tested by Chang Liu, cliu32@wustl.edu (11/1/2017)
+#to split reads based on primer sequences at the two ends of a read
+
+import os
 import pdb
-import pickle
+#import pickle
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import generic_dna
 import numpy as np
 import pandas as pd
-from read_obj import read_obj
-from read_obj import subread_obj
 import argparse
 
 
-def globalPaths():
-    global alignFolder
-    global refFolder
-    global readsFolder
-    global SNPFolder
-    global trueSNPFolder
-    global errorDir
-    global consensusFolder
-    global primerFolder
-    global kallistoPseudoFolder
-    global kallistoQuantFolder
 
-    alignFolder='./alignment/'
-    refFolder='./reference/'
+def globalPaths():
+    global readsFolder
+    global primerFolder
+
     readsFolder='./data/'
-    SNPFolder='./SNPCall/'
-    trueSNPFolder='./trueSNP/'
-    errorDir='./errorProfile/'
-    consensusFolder='./consensus/'
     primerFolder='./primer/'
-    kallistoPseudoFolder='./kallisto_pseudo/'
-    kallistoQuantFolder='./kallisto_quant/'
+
+
+class seq_obj:
+    def __init__(self,sq):
+        #sq must be a string
+        self.sq=sq
+        self.rc=seq_obj.rc(sq)
+        self.h=hash(sq)
+        self.h_rc=hash(self.rc)
+        
+    @staticmethod
+    def equal(seq1,seq2):
+        result=any([seq1.h==seq2.h,seq1.h==seq2.h_rc])
+        return result
+    
+    @staticmethod
+    def rc(sq):
+        dnaMapDict={'A':'T','C':'G','T':'A','G':'C'}
+        rc=[dnaMapDict[c] for c in sq]
+        return ''.join(rc[::-1])
+
+def loadPrimer_temp(primerFN):
+    primerFPath=primerFolder+primerFN
+    hlaPrimers=pd.DataFrame.from_csv(primerFPath+'.csv',header=1)
+    columns=['fw', 'rv']
+    primers=pd.DataFrame(data=hlaPrimers,columns=columns)
+    return primers
 
 def kmerDistr(seq,k):
     # seq is string or list of char
@@ -72,10 +85,6 @@ def matchReadPrimer(readLD,readRD,primers,h_rc):
 def scoreReadPrimer(readDistr,primerDistr,count_primer,h_rc):
     count=0.
     for key,val in primerDistr.iteritems():
-#        inRead=[key==x or h_rc[key]==x for x in readDistr.keys()]
-#        if any(inRead):
-#            assert sum(inRead)==1
-#            count+=min(readDistr[key],val)
         try: 
             count+=min(readDistr[key],val)
         except KeyError:
@@ -86,19 +95,10 @@ def scoreReadPrimer(readDistr,primerDistr,count_primer,h_rc):
     if count>count_primer: pdb.set_trace()
     return count/count_primer
 
-
-
-def loadPrimer_temp(primerFN):
-    primerFPath=primerFolder+primerFN
-    hlaPrimers=pd.DataFrame.from_csv(primerFPath+'.csv',header=1)
-    columns=['fw', 'rv']
-    primers=pd.DataFrame(data=hlaPrimers,columns=columns)
-    return primers
-
 def splitReadsByPrimer_kmer(readsFN,primerFN,cutoff_list,k=7,endN=100,cutoff_option='score_diff'):
     primers=loadPrimer_temp(primerFN)
     cutoff=np.array(cutoff_list)
-# test whether some of the files already exist
+    # test whether some of the files already exist
     fN_list=[readsFN+'_'+str(key)+'_k'+str(k)+'_endN'+str(endN)+'_cutoff'+str(cutoff[idx]) for key in primers.index for idx in xrange(len(cutoff))]
     doesExist=lambda i: os.path.isfile(readsFolder+fN_list[i]+'.fastq') and os.path.isfile(readsFolder+fN_list[i]+'.p')
     cutoff_notExist=[cutoff_list[i] for i in xrange(len(cutoff_list)) if not doesExist(i)]
@@ -127,7 +127,6 @@ def splitReadsByPrimer_kmer(readsFN,primerFN,cutoff_list,k=7,endN=100,cutoff_opt
         
         primers['rv_count']=[sum(x.values()) for x in primers['rv_kmer']]
         reads=SeqIO.parse(open(readsFolder+readsFN+'.fastq','rU'),'fastq')
-    #    primerReadsDic=dict((x,[]) for x in primers.index)
         primerReadsDics=[dict((x,[]) for x in primers.index) for i in xrange(len(cutoff_list))]
         scores=[]
         scores_diff=[]
@@ -161,11 +160,13 @@ def splitReadsByPrimer_kmer(readsFN,primerFN,cutoff_list,k=7,endN=100,cutoff_opt
         [SeqIO.write(primerReadsDics[idx][key],open(readsFolder+readsFN+'_'+str(key)+'_k'+str(k)+'_endN'+str(endN)+'_cutoff'+str(cutoff[idx])+'.fastq','wr'),'fastq') for key in primers.index for idx in xrange(len(cutoff))]
         mean_list=[x[ky] for x in meanDics for ky in primers.index]
         std_list=[x[ky] for x in stdDics for ky in primers.index]
-        [pickle.dump({'score':score,'score_diff':score_diff,'mean':mean,'std':std},open(readsFolder+fN+'.p','wr')) for score,score_diff,fN,mean,std in zip(scores,scores_diff,fN_list,mean_list,std_list)]
+        #inactivate the line below because do not need .p files for now. 
+        #[pickle.dump({'score':score,'score_diff':score_diff,'mean':mean,'std':std},open(readsFolder+fN+'.p','wr')) for score,score_diff,fN,mean,std in zip(scores,scores_diff,fN_list,mean_list,std_list)]
     return scores,scores_diff,fN_list,mean_list,std_list
 
     
 if __name__=='__main__':
+    globalPaths()
     parser=argparse.ArgumentParser(description="split reads based on k-mer matching with primers")
     parser.add_argument('readsFN',type=str,help='File name for the reads. Fastq format. Do not include .fastq')
     parser.add_argument('primerFN',type=str,help='File name for the primers. csv format. See example included. Do not include .csv')
@@ -174,7 +175,6 @@ if __name__=='__main__':
     parser.add_argument('-N','--endN',nargs='?',default=100,type=int,help='the number of bp at the ends of each read to consider when comparing with primer.')
     aa=parser.parse_args()
 #    print(args)
-    pdb.set_trace()
+#    pdb.set_trace()
     splitReadsByPrimer_kmer(aa.readsFN,aa.primerFN,aa.cutoff,k=aa.k,endN=aa.endN)
-#    
-
+    
