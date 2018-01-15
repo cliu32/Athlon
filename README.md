@@ -26,13 +26,18 @@ chmod +x athlon.sh
 
 Three samples in the /data folder will be analyzed, each containing ~3000 reads for locus A, B, and C, respectively. For <ReadNumber> when calling athlon.sh, please specify the number of reads (3000 or lower) to be analyzed, for example, 1000. A new folder /data1000 will be generated to hold fastq files with randomly sampled reads. Intermediate files during the analysis will be located the /rslt1000 folder. A .log file and a .rslt file will be generated in the end. The log file will outline the process of selecting candidate alleles; the rslt file will report all the typing results at 3-field G-group level.
 
-## Demultiplexing
+## Demultiplexing by locus-specific primer sequences
 
-If you are starding from a fastq file, <fqName>.fastq, that have not been demultiplexed, please follow these steps. i) Include the fastq file in the /rawdata folder, ii) update the primer sequences in the hla_primers_ABC.csv file in the /primer folder to match your primer sequences, and iii) run the following python script: 
+If you are starting from a fastq file, <fqName>.fastq, that have not been demultiplexed, please follow these steps. i) Include the fastq file in the /rawdata folder, ii) update the primer sequences in the hla_primers_ABC.csv file in the /primer folder to match your primer sequences, and iii) run the following python script: 
 ```
 python kmer_split.py <fqName> hla_primers_ABC
 ```
 Then copy all the demultiplexed fastq files to /data, which will be ready for athlon analysis. 
+To customize the demultiplexing step, please follow the help message: 
+```
+python kmer_split.py -h
+```
+
 
 
 ## Versioning
