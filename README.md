@@ -24,7 +24,11 @@ chmod +x athlon.sh
 ./athlon.sh <ReadNumber>
 ```
 
-Three samples in the /data folder will be analyzed, each containing ~3000 reads for locus A, B, and C, respectively. For <ReadNumber> when calling athlon.sh, please specify the number of reads (3000 or lower) to be analyzed, for example, 1000. A new folder /data1000 will be generated to hold fastq files with randomly sampled reads. Intermediate files during the analysis will be located the /rslt1000 folder. A .log file and a .rslt file will be generated in the end. The log file will outline the process of selecting candidate alleles; the rslt file will report all the typing results at 3-field G-group level.
+Three samples in the /data folder will be analyzed, each containing ~3000 reads for locus A, B, and C, respectively. When calling athlon.sh, please specify the number of reads (3000 or lower in this case) to be analyzed in the command line, for example: 
+```
+./athlon.sh 1000
+```
+A new folder /data1000 will be generated to hold fastq files with randomly sampled reads from the original fastq files in the /data folder. Intermediate files during the analysis will be located the /rslt1000 folder. A .log file and a .rslt file will be generated in the /Athlon directory. The log file will document the process of selecting candidate alleles for each sample; the rslt file will report all the typing results at 3-field G-group level.
 
 ## Demultiplexing by locus-specific primer sequences
 
